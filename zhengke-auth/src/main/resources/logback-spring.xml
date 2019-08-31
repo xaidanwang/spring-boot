@@ -34,11 +34,11 @@
         </encoder>
     </appender>
     <!--日志打印的包的范围，及分类日志文件存储 -->
-    <logger name="com.gato.yun.mppr.statistics.service.dao" additivity="false">
+<!--    <logger name="com.gato.yun.mppr.statistics.service.dao" additivity="false">
         <level value="DEBUG" />
         <appender-ref ref="fileLog" />
         <appender-ref ref="consoleLog" />
-    </logger>
+    </logger>-->
 
     <root level="INFO">
         <appender-ref ref="fileLog" />

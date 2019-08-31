@@ -33,3 +33,6 @@ mybatis:
     basepackage: com.github.aidan.wechat.account.dao
     xmlLocation: classpath:mapper/**/*.xml
     mapper-locations: "classpath*:mapper/*.xml"
+logback:
+  appname: zhengke-auth
+  logdir: /var/log
