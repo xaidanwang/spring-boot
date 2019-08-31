@@ -1,7 +1,9 @@
 package com.github.xaidanwang.zhengke.auth.entity;
 
-import java.util.Date;
+import lombok.Data;
 
+import java.util.Date;
+@Data
 public class AuthDo {
     private Integer id;
 
@@ -9,11 +11,11 @@ public class AuthDo {
 
     private String token;
 
-    private Date updatetime;
+    private String updatetime;
 
-    private Date createtime;
+    private String createtime;
 
-    private Date expiretime;
+    private String expiretime;
 
     public Integer getId() {
         return id;
@@ -39,27 +41,27 @@ public class AuthDo {
         this.token = token == null ? null : token.trim();
     }
 
-    public Date getUpdatetime() {
-        return updatetime;
-    }
-
-    public void setUpdatetime(Date updatetime) {
+    public void setUpdatetime(String updatetime) {
         this.updatetime = updatetime;
     }
 
-    public Date getCreatetime() {
-        return createtime;
-    }
-
-    public void setCreatetime(Date createtime) {
+    public void setCreatetime(String createtime) {
         this.createtime = createtime;
     }
 
-    public Date getExpiretime() {
-        return expiretime;
+    public void setExpiretime(String expiretime) {
+        this.expiretime = expiretime;
     }
 
-    public void setExpiretime(Date expiretime) {
-        this.expiretime = expiretime;
+    public String getUpdatetime() {
+        return updatetime;
+    }
+
+    public String getCreatetime() {
+        return createtime;
+    }
+
+    public String getExpiretime() {
+        return expiretime;
     }
 }

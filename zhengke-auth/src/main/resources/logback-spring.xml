@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration scan="true">
-    <contextName>iacserv-log</contextName>
+    <contextName>zhengke-auth-log</contextName>
 
     <!--application.yml 传递参数，不能使用logback 自带的<property>标签 -->
     <springProperty scope="context" name="logback.appname" source="logback.appname"/>
@@ -32,16 +32,22 @@
             <charset>UTF-8</charset>
             <pattern>%d [%thread] %-5level %logger{36} %line - %msg%n</pattern>
         </encoder>
+        <!-- 此日志文档只记录debug 和 info 级别的 -->
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>debug</level>
+            <level>info</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
     </appender>
     <!--日志打印的包的范围，及分类日志文件存储 -->
-<!--    <logger name="com.gato.yun.mppr.statistics.service.dao" additivity="false">
+    <logger name="com.github.xaidanwang.zhengke.auth.dao" additivity="false">
         <level value="DEBUG" />
         <appender-ref ref="fileLog" />
-        <appender-ref ref="consoleLog" />
-    </logger>-->
+    </logger>
 
     <root level="INFO">
         <appender-ref ref="fileLog" />
-    <!--    <appender-ref ref="consoleLog" />-->
+        <appender-ref ref="consoleLog" />
     </root>
 </configuration>

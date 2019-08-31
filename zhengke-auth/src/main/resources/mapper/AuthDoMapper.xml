@@ -103,4 +103,37 @@
       expireTime = #{expiretime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <select id="selectByPhoneIdAndToken" parameterType="map" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from zhengke_auth
+    where phoneId = #{phoneId,jdbcType=VARCHAR} and token = #{token,jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectSelectiveByPhoneIdAndToken" parameterType="map" resultMap="BaseResultMap">
+    select  <include refid="Base_Column_List" />
+    from zhengke_auth
+    where
+    <if test="phoneId != null and phoneId != '' ">
+      phoneId = #{phoneId,jdbcType=VARCHAR}
+    </if>
+    <if test="phoneId != null and phoneId != '' and token != null and token != '' ">
+      and
+    </if>
+    <if test="token != null and token != ''">
+        token = #{token,jdbcType=VARCHAR}
+    </if>
+  </select>
+
+  <delete id="deleteExpireAuthDo" parameterType="string">
+    delete from zhengke_auth
+    where expireTime <![CDATA[ <= ]]> #{locaTime,jdbcType=TIMESTAMP}
+  </delete>
+
+  <update id="updateByToken" parameterType="map">
+    update zhengke_auth
+    set expireTime = #{expireTime,jdbcType=TIMESTAMP}
+    where token = #{token,jdbcType=VARCHAR}
+  </update>
 </mapper>
