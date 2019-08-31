@@ -5,4 +5,7 @@ package com.github.xaidanwang.zhengke.auth.service;
  * @date 2019/8/29 14:54
  */
 public interface AuthService {
+
+
+	String atuhVerify(String phoneId,String token);
 }
