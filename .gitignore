@@ -126,3 +126,7 @@ sppc-alarm/sppc-alarmlog-service/allure-results/c82784d6-209c-4fc4-b2fb-67baba69
 sppc-alarm/sppc-alarmlog-service/allure-results/7aab43c9-ad4d-4658-b9bc-a4e39cc3d6c5-result.json
 sppc-alarm/sppc-alarmlog-service/allure-results/6355d729-dd3f-40ac-b8c9-1b2dddf752ce-result.json
 sppc-alarm/sppc-alarmlog-service/allure-results/1f70d829-aa6d-47f0-a2f5-7de671eea185-result.json
+zhengke-auth/.mvn/wrapper/maven-wrapper.properties
+zhengke-auth/.mvn/wrapper/MavenWrapperDownloader.java
+service-template/service-template-server/.mvn/wrapper/maven-wrapper.properties
+service-template/service-template-server/.mvn/wrapper/MavenWrapperDownloader.java
