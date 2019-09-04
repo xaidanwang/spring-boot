@@ -54,7 +54,6 @@ public class AuthController {
 		return result;
 	}
 
-
 	@ApiOperation(value = "给某个秘钥重新设定过期时间",httpMethod = "POST",notes = "给某个秘钥重新设定过期时间")
 	@RequestMapping(value = "/expireTime",method = RequestMethod.POST)
 	public String setTokenExpireTime(@RequestParam(value = "token") String token,@RequestParam(value = "expireTime") String expireTime){
