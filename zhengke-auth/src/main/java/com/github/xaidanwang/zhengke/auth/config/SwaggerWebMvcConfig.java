@@ -26,8 +26,8 @@ public class SwaggerWebMvcConfig extends WebSecurityConfigurerAdapter {
 				.and()
 				.authorizeRequests()    // 定义哪些URL需要被保护、哪些不需要被保护
 				.mvcMatchers("/swagger-ui.html").authenticated()
-				.anyRequest()
-				.permitAll();       // 任何请求,登录后可以访问
+				.anyRequest()        // 任何请求,登录后可以访问
+				.authenticated();
 	}
 }
 
