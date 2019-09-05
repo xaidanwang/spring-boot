@@ -1,5 +1,9 @@
 package com.github.xaidanwang.zhengke.auth.service;
 
+import com.github.xaidanwang.zhengke.auth.entity.AuthDo;
+
+import java.util.List;
+
 /**
  * @author wang yi fei
  * @date 2019/8/29 14:54
@@ -13,7 +17,7 @@ public interface AuthService {
 	 * @param token
 	 * @return
 	 */
-	String atuhVerify(String phoneId,String token);
+	void atuhVerify(String phoneId,String token);
 
 	/**
 	 * 获取 机器码与 秘钥 的过期时间
@@ -21,7 +25,7 @@ public interface AuthService {
 	 * @param token
 	 * @return
 	 */
-	String getExpireTime(String phoneId,String token);
+	List<AuthDo> getExpireTime(String phoneId,String token,String remark);
 
 	/**
 	 * 清楚所有过去的信息
@@ -34,7 +38,7 @@ public interface AuthService {
 	 * @param token
 	 * @return
 	 */
-	String setTokenExpireTime(String token,String expireTime);
+	void setTokenExpireTime(String token,Long time,String remark);
 
 
 	/**
@@ -45,5 +49,8 @@ public interface AuthService {
 	 */
 	String addAuthDo(String phoneId,String expireTime);
 
+	void bindToken(String phoneid,String token);
+	void addToken(int num,String remark,int time);
 
+	List<AuthDo> getAccountList(String phoneid,String token,String remark);
 }

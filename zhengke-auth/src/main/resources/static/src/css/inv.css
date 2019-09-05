@@ -1,0 +1,17 @@
+.content-header{
+	margin:10px;
+	margin-bottom:0px;
+}
+
+.content-grid{
+	margin-top:20px;
+}
+
+.kcui-combobox>input{
+	border-bottom-left-radius: 0;
+    border-top-left-radius: 0;
+}
+
+.kcui-combobox-modal-width{
+	width:100%;
+}

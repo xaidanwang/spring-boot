@@ -1,0 +1,30 @@
+.content-header{
+	margin:10px;
+	margin-bottom:0px;
+}
+
+.content-grid{
+	margin-top:20px;
+}
+
+.kcui-combobox>input{
+	border-bottom-left-radius: 0;
+    border-top-left-radius: 0;
+}
+
+#addUserForm .form-inline{
+	margin:10px 0px;
+}
+#addUserForm .kcui-combobox-width{
+	width:277px;
+}
+#addUserForm .kcui-combobox-block-width{
+	width:560px;
+}
+
+#addUserForm .input-group:nth-of-type(even){
+	margin-left:10px;
+}
+#addUserForm .label-input-width{
+	width:277px;
+}

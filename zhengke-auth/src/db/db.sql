@@ -1,8 +1,10 @@
 /*==============================================================*/
 /* DBMS name:      MySQL 5.0                                    */
-/* Created on:     2019/8/31 10:31:05                           */
+/* Created on:     2019/9/4 18:57:52                            */
 /*==============================================================*/
 
+
+drop index Index_5 on zhengke_auth;
 
 drop index Index_4 on zhengke_auth;
 
@@ -19,12 +21,14 @@ drop table if exists zhengke_auth;
 /*==============================================================*/
 create table zhengke_auth
 (
-   id                   int not null,
+   id                   bigint not null auto_increment,
    phoneId              varchar(64),
    token                varchar(32),
    updateTime           datetime default CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
    createTime           datetime default CURRENT_TIMESTAMP,
-   expireTime           datetime comment 'token 有效时间',
+   validityDay          int comment 'token 有效时间',
+   erpireDate           datetime,
+   remark               varchar(64),
    primary key (id)
 );
 
@@ -59,6 +63,14 @@ create index Index_3 on zhengke_auth
 /*==============================================================*/
 create index Index_4 on zhengke_auth
 (
-   expireTime
+   validityDay
+);
+
+/*==============================================================*/
+/* Index: Index_5                                               */
+/*==============================================================*/
+create index Index_5 on zhengke_auth
+(
+   remark
 );
 

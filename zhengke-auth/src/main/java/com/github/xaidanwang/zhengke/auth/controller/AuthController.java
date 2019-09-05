@@ -1,16 +1,21 @@
 package com.github.xaidanwang.zhengke.auth.controller;
 
+import com.github.xaidanwang.response.CommonResult;
+import com.github.xaidanwang.response.ConstantEnum;
+import com.github.xaidanwang.zhengke.auth.entity.AuthDo;
 import com.github.xaidanwang.zhengke.auth.exception.ParamException;
 import com.github.xaidanwang.zhengke.auth.service.AuthService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
+
+import java.util.List;
 
 /**
  * @author wang yi fei
@@ -22,59 +27,75 @@ public class AuthController {
 	@Autowired
 	private AuthService authService;
 
-	@ApiOperation(value = "账号秘钥检测",httpMethod = "POST",notes = "账号秘钥检测")
-	@RequestMapping(value = "/verify",method = RequestMethod.POST)
-	public String atuhVerify(@RequestParam(value = "phoneId") String phoneId,@RequestParam(value = "token") String token){
-		if (StringUtils.isEmpty(token) || token.length() != 32){
-			throw new ParamException("秘钥不能为空或者格式不对");
-		}
-		if (StringUtils.isEmpty(phoneId) || phoneId.length() >= 64){
-			throw new ParamException("机器码不能为空或者格式不对");
-		}
-		String result = authService.atuhVerify(phoneId,token);
-		log.info("验证机器码: [{}] 秘钥: [{}]， 结果: [{}]",phoneId,token,result);
-		return result;
-	}
-	@ApiOperation(value = "查询秘钥或者机器码的过期时间",httpMethod = "GET",notes = "查询秘钥或者机器码的过期时间")
 	@RequestMapping(value = "/expireTime",method = RequestMethod.GET)
-	public String getExpireTime(@RequestParam(value = "phoneId",required = false) String phoneId,@RequestParam(value = "token",required = false) String token){
+	public CommonResult<List<AuthDo>> getExpireTime(@RequestParam(value = "phoneid",required = false) String phoneid,@RequestParam(value = "token",required = false) String token,@RequestParam(value = "remark",required = false)String remark){
 
-		if (StringUtils.isEmpty(phoneId) && StringUtils.isEmpty(token)){
+		if (StringUtils.isEmpty(phoneid) && StringUtils.isEmpty(token)){
 			throw new ParamException("机器码与秘钥必填一个");
 		}
-		String result = authService.getExpireTime(phoneId,token);
-		log.info("验证机器码: [{}] 秘钥: [{}]， 结果: [{}]",phoneId,token,result);
-		return result;
+		List<AuthDo> result = authService.getExpireTime(phoneid,token,remark);
+		log.info("验证机器码: [{}] 秘钥: [{}]， 结果: [{}]",phoneid,token,result);
+		return CommonResult.buildWithData(ConstantEnum.GLOBAL_SUCCESS,result);
+	}
+
+	@ApiOperation(value = "给某个秘钥或者某个备注下的秘钥增加过期时间",httpMethod = "POST",notes = "给某个秘钥或者某个备注下的秘钥增加过期时间")
+	@RequestMapping(value = "/expireTime",method = RequestMethod.POST)
+	public CommonResult setTokenExpireTime(@RequestParam(value = "token",required = false) String token,@RequestParam(value = "remark",required = false)String remark, @RequestParam(value = "time")Long time){
+		authService.setTokenExpireTime(token,time,remark);
+		return CommonResult.build(ConstantEnum.GLOBAL_SUCCESS);
+	}
+
+
+	@ApiOperation(value = "批量生成token",httpMethod = "POST",notes = "批量生成token")
+	@PostMapping(value = "/add")
+	public CommonResult addToken(@RequestParam(value = "mum")Integer num, @RequestParam(value = "remark")String remark, @RequestParam(value = "time")Integer time){
+		authService.addToken(num,remark,time);
+		return CommonResult.build(ConstantEnum.GLOBAL_SUCCESS);
+	}
+
+	@PostMapping(value = "/bind")
+	@ApiOperation(value = "机器绑定秘钥",httpMethod = "POST",notes = "机器绑定秘钥")
+	public CommonResult bindToken(@RequestParam(value = "phoneid")String phoneid, @RequestParam(value = "token")String token){
+		authService.bindToken(phoneid,token);
+		return CommonResult.build(ConstantEnum.GLOBAL_SUCCESS);
+	}
+
+	@ApiOperation(value = "批量或者单个查询",httpMethod = "POST",notes = "批量或者单个查询")
+	@PostMapping(value = "/get")
+	public CommonResult<List<AuthDo>> getAccountList(@RequestParam(value = "phoneid",required = false)String phoneid, @RequestParam(value = "token",required = false)String token, @RequestParam(value = "remark",required = false)String remark){
+		List<AuthDo> authDoList = authService.getAccountList(phoneid,token,remark);
+		return CommonResult.buildWithData(ConstantEnum.GLOBAL_SUCCESS,authDoList);
 	}
 
 	@ApiOperation(value = "删除所有过期的秘钥",httpMethod = "DELETE",notes = "删除所有过期的秘钥")
-	@RequestMapping(value = "/expireTime",method = RequestMethod.DELETE)
-	public String clearExpireToken(){
+	@RequestMapping(value = "/token",method = RequestMethod.DELETE)
+	public CommonResult<String> clearExpireToken(){
 		String result = authService.clearExpireToken();
-		return result;
+		return CommonResult.buildWithData(ConstantEnum.GLOBAL_SUCCESS,result);
 	}
 
-
-	@ApiOperation(value = "给某个秘钥重新设定过期时间",httpMethod = "POST",notes = "给某个秘钥重新设定过期时间")
-	@RequestMapping(value = "/expireTime",method = RequestMethod.POST)
-	public String setTokenExpireTime(@RequestParam(value = "token") String token,@RequestParam(value = "expireTime") String expireTime){
+	@ApiOperation(value = "账号秘钥检测",httpMethod = "POST",notes = "账号秘钥检测")
+	@RequestMapping(value = "/verify",method = RequestMethod.POST)
+	public CommonResult atuhVerify(@RequestParam(value = "phoneid") String phoneid,@RequestParam(value = "token") String token){
 		if (StringUtils.isEmpty(token) || token.length() != 32){
 			throw new ParamException("秘钥不能为空或者格式不对");
 		}
-		String result = authService.setTokenExpireTime(token,expireTime);
-		return result;
-	}
-
-	@ApiOperation(value = "添加机器码设置秘钥",httpMethod = "POST",notes = "添加机器码设置秘钥")
-	@RequestMapping(value = "/add/phoneId",method = RequestMethod.POST)
-	public String addAuthDo(@RequestParam(value = "phoneId") String phoneId,@RequestParam(value = "expireTime") String expireTime){
-		if (StringUtils.isEmpty(expireTime)){
-			throw new ParamException("过期时间不能为空或者格式不对");
-		}
-		if (StringUtils.isEmpty(phoneId) || phoneId.length() >= 64){
+		if (StringUtils.isEmpty(phoneid) || phoneid.length() >= 64){
 			throw new ParamException("机器码不能为空或者格式不对");
 		}
-		String result = authService.addAuthDo(phoneId,expireTime);
-		return result;
+		authService.atuhVerify(phoneid,token);
+		log.info("验证机器码: [{}] 秘钥: [{}]， 结果: [{}]",phoneid,token);
+		return CommonResult.build(ConstantEnum.GLOBAL_SUCCESS);
 	}
+
+	@PostMapping(value = "/login")
+	public CommonResult login(@RequestParam(value = "username")String username,@RequestParam(value = "password")String password){
+
+		if (username.equalsIgnoreCase("zh") && password.equalsIgnoreCase("1234567")){
+			return CommonResult.build(ConstantEnum.GLOBAL_SUCCESS);
+		}else {
+			return CommonResult.build(ConstantEnum.GLOBAL_FAIL);
+		}
+	}
+
 }

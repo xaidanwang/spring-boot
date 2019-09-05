@@ -2,33 +2,35 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.github.xaidanwang.zhengke.auth.dao.AuthDoMapper">
   <resultMap id="BaseResultMap" type="com.github.xaidanwang.zhengke.auth.entity.AuthDo">
-    <id column="id" jdbcType="INTEGER" property="id" />
+    <id column="id" jdbcType="BIGINT" property="id" />
     <result column="phoneId" jdbcType="VARCHAR" property="phoneid" />
     <result column="token" jdbcType="VARCHAR" property="token" />
     <result column="updateTime" jdbcType="TIMESTAMP" property="updatetime" />
     <result column="createTime" jdbcType="TIMESTAMP" property="createtime" />
-    <result column="expireTime" jdbcType="TIMESTAMP" property="expiretime" />
+    <result column="validityDay" jdbcType="INTEGER" property="validityday" />
+    <result column="erpireDate" jdbcType="TIMESTAMP" property="erpiredate" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, phoneId, token, updateTime, createTime, expireTime
+    id, phoneId, token, updateTime, createTime, validityDay, erpireDate, remark
   </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select 
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select
     <include refid="Base_Column_List" />
     from zhengke_auth
-    where id = #{id,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from zhengke_auth
-    where id = #{id,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.github.xaidanwang.zhengke.auth.entity.AuthDo">
     insert into zhengke_auth (id, phoneId, token, 
-      updateTime, createTime, expireTime
-      )
-    values (#{id,jdbcType=INTEGER}, #{phoneid,jdbcType=VARCHAR}, #{token,jdbcType=VARCHAR}, 
-      #{updatetime,jdbcType=TIMESTAMP}, #{createtime,jdbcType=TIMESTAMP}, #{expiretime,jdbcType=TIMESTAMP}
-      )
+      updateTime, createTime, validityDay, 
+      erpireDate, remark)
+    values (#{id,jdbcType=BIGINT}, #{phoneid,jdbcType=VARCHAR}, #{token,jdbcType=VARCHAR}, 
+      #{updatetime,jdbcType=TIMESTAMP}, #{createtime,jdbcType=TIMESTAMP}, #{validityday,jdbcType=INTEGER}, 
+      #{erpiredate,jdbcType=TIMESTAMP}, #{remark,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.github.xaidanwang.zhengke.auth.entity.AuthDo">
     insert into zhengke_auth
@@ -48,13 +50,19 @@
       <if test="createtime != null">
         createTime,
       </if>
-      <if test="expiretime != null">
-        expireTime,
+      <if test="validityday != null">
+        validityDay,
+      </if>
+      <if test="erpiredate != null">
+        erpireDate,
+      </if>
+      <if test="remark != null">
+        remark,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
-        #{id,jdbcType=INTEGER},
+        #{id,jdbcType=BIGINT},
       </if>
       <if test="phoneid != null">
         #{phoneid,jdbcType=VARCHAR},
@@ -68,8 +76,14 @@
       <if test="createtime != null">
         #{createtime,jdbcType=TIMESTAMP},
       </if>
-      <if test="expiretime != null">
-        #{expiretime,jdbcType=TIMESTAMP},
+      <if test="validityday != null">
+        #{validityday,jdbcType=INTEGER},
+      </if>
+      <if test="erpiredate != null">
+        #{erpiredate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -88,11 +102,17 @@
       <if test="createtime != null">
         createTime = #{createtime,jdbcType=TIMESTAMP},
       </if>
-      <if test="expiretime != null">
-        expireTime = #{expiretime,jdbcType=TIMESTAMP},
+      <if test="validityday != null">
+        validityDay = #{validityday,jdbcType=INTEGER},
+      </if>
+      <if test="erpiredate != null">
+        erpireDate = #{erpiredate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
       </if>
     </set>
-    where id = #{id,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.github.xaidanwang.zhengke.auth.entity.AuthDo">
     update zhengke_auth
@@ -100,40 +120,51 @@
       token = #{token,jdbcType=VARCHAR},
       updateTime = #{updatetime,jdbcType=TIMESTAMP},
       createTime = #{createtime,jdbcType=TIMESTAMP},
-      expireTime = #{expiretime,jdbcType=TIMESTAMP}
-    where id = #{id,jdbcType=INTEGER}
+      validityDay = #{validityday,jdbcType=INTEGER},
+      erpireDate = #{erpiredate,jdbcType=TIMESTAMP},
+      remark = #{remark,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
   </update>
 
-  <select id="selectByPhoneIdAndToken" parameterType="map" resultMap="BaseResultMap">
+  <select id="getAuthDoByToken" parameterType="string" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from zhengke_auth
-    where phoneId = #{phoneId,jdbcType=VARCHAR} and token = #{token,jdbcType=VARCHAR}
+    where token = #{token,jdbcType=VARCHAR}
   </select>
-
-  <select id="selectSelectiveByPhoneIdAndToken" parameterType="map" resultMap="BaseResultMap">
-    select  <include refid="Base_Column_List" />
+  <select id="getAuthDoList" parameterType="map" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
     from zhengke_auth
     where
-    <if test="phoneId != null and phoneId != '' ">
-      phoneId = #{phoneId,jdbcType=VARCHAR}
+    <if test="phoneid != null and phoneid != '' ">
+      phoneId = #{phoneid,jdbcType=VARCHAR} and
     </if>
-    <if test="phoneId != null and phoneId != '' and token != null and token != '' ">
-      and
+    <if test="token != null and token != '' ">
+      token = #{token,jdbcType=VARCHAR} and
     </if>
-    <if test="token != null and token != ''">
-        token = #{token,jdbcType=VARCHAR}
+    <if test="remark != null and remark != ''">
+      remark like "%"#{remark,jdbcType=VARCHAR}"%"
     </if>
   </select>
 
-  <delete id="deleteExpireAuthDo" parameterType="string">
-    delete from zhengke_auth
-    where expireTime <![CDATA[ <= ]]> #{locaTime,jdbcType=TIMESTAMP}
+  <select id="getAuthDo" parameterType="map" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from zhengke_auth
+    where phoneId = #{phoneid,jdbcType=VARCHAR} and token = #{token,jdbcType=VARCHAR}
+  </select>
+
+  <delete id="deleteByErpireDate" parameterType="string">
+    DELETE  FROM `zhengke_auth` WHERE zhengke_auth.erpireDate <![CDATA[ <= ]]> NOW()
   </delete>
 
-  <update id="updateByToken" parameterType="map">
-    update zhengke_auth
-    set expireTime = #{expireTime,jdbcType=TIMESTAMP}
-    where token = #{token,jdbcType=VARCHAR}
-  </update>
+
+  <select id="getAuthDoByRemark" parameterType="string" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from zhengke_auth
+    where remark = #{remark,jdbcType=VARCHAR}
+
+  </select>
 </mapper>

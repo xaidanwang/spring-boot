@@ -2,33 +2,30 @@ package com.github.xaidanwang.zhengke.auth.dao;
 
 import com.github.xaidanwang.zhengke.auth.entity.AuthDo;
 import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
 
+import java.util.List;
 
 public interface AuthDoMapper {
-    int deleteByPrimaryKey(Integer id);
+    int deleteByPrimaryKey(Long id);
 
     int insert(AuthDo record);
 
     int insertSelective(AuthDo record);
 
-    AuthDo selectByPrimaryKey(Integer id);
+    AuthDo selectByPrimaryKey(Long id);
 
     int updateByPrimaryKeySelective(AuthDo record);
 
     int updateByPrimaryKey(AuthDo record);
 
+    AuthDo getAuthDoByToken(@Param(value = "token") String token);
 
-    AuthDo selectByPhoneIdAndToken(@Param(value = "phoneId") String phoneId,@Param(value = "token") String token);
+    List<AuthDo> getAuthDoList(@Param(value = "phoneid") String phoneid,@Param(value = "token") String token,@Param(value = "remark") String remark);
 
-    AuthDo selectSelectiveByPhoneIdAndToken(@Param(value = "phoneId") String phoneId,@Param(value = "token") String token);
+    AuthDo getAuthDo(@Param(value = "phoneid") String phoneid,@Param(value = "token") String token);
 
-    /**
-     * 查出 expireTime <= locaTime 的记录
-     * @param locaTime
-     * @return
-     */
-    int deleteExpireAuthDo(@Param(value = "locaTime") String locaTime);
+    int deleteByErpireDate();
 
-    int updateByToken(@Param(value = "token") String token,@Param(value = "expireTime")String expireTime);
+
+    List<AuthDo> getAuthDoByRemark(@Param(value = "remark") String remark);
 }

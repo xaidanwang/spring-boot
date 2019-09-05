@@ -1,0 +1,26 @@
+.content-header{
+	margin:10px;
+	margin-bottom:0px;
+}
+
+.content-grid{
+	margin-top:20px;
+}
+
+.kcui-combobox>input{
+	border-bottom-left-radius: 0;
+    border-top-left-radius: 0;
+}
+
+#mStationForm .form-inline{
+	margin:10px 0px;
+}
+#mStationForm .kcui-combobox-width{
+	width:350px;
+}
+#mStationForm .input-group:nth-of-type(even){
+	margin-left:10px;
+}
+#mStationForm .label-input-width{
+	width:350px;
+}
