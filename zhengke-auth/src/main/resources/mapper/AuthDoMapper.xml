@@ -136,16 +136,17 @@
     select
     <include refid="Base_Column_List" />
     from zhengke_auth
-    where
-    <if test="phoneid != null and phoneid != '' ">
-      phoneId = #{phoneid,jdbcType=VARCHAR} and
-    </if>
-    <if test="token != null and token != '' ">
-      token = #{token,jdbcType=VARCHAR} and
-    </if>
-    <if test="remark != null and remark != ''">
-      remark like "%"#{remark,jdbcType=VARCHAR}"%"
-    </if>
+    <where>
+      <if test="phoneid != null and phoneid != '' ">
+        and phoneId = #{phoneid,jdbcType=VARCHAR}
+      </if>
+      <if test="token != null and token != '' ">
+        and  token = #{token,jdbcType=VARCHAR}
+      </if>
+      <if test="remark != null and remark != ''">
+        and remark like "%"#{remark,jdbcType=VARCHAR}"%"
+      </if>
+    </where>
   </select>
 
   <select id="getAuthDo" parameterType="map" resultMap="BaseResultMap">
