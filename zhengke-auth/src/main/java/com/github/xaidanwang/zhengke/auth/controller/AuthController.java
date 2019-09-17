@@ -87,7 +87,19 @@ public class AuthController {
 		log.info("验证机器码: [{}] 秘钥: [{}]， 结果: [{}]",phoneid,token);
 		return CommonResult.build(ConstantEnum.GLOBAL_SUCCESS);
 	}
-
+	@ApiOperation(value = "修改绑定的秘钥",httpMethod = "GET",notes = "修改绑定的秘钥")
+	@RequestMapping(value = "/verify",method = RequestMethod.GET)
+	public CommonResult<String> updateToken(@RequestParam(value = "phoneid") String phoneid,@RequestParam(value = "token") String token){
+		if (StringUtils.isEmpty(token) || token.length() != 32){
+			throw new ParamException("秘钥不能为空或者格式不对");
+		}
+		if (StringUtils.isEmpty(phoneid) || phoneid.length() >= 64){
+			throw new ParamException("机器码不能为空或者格式不对");
+		}
+		String newToken = authService.updateToken(phoneid,token);
+		log.info("验证机器码: [{}] 秘钥: [{}]， 结果: [{}]",phoneid,token);
+		return CommonResult.buildWithData(ConstantEnum.GLOBAL_SUCCESS,newToken);
+	}
 	@PostMapping(value = "/login")
 	public CommonResult login(@RequestParam(value = "username")String username,@RequestParam(value = "password")String password){
 

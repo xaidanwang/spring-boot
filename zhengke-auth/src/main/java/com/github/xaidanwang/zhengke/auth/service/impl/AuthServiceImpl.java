@@ -44,6 +44,20 @@ public class AuthServiceImpl implements AuthService {
 
 	}
 
+	@Override
+	public String updateToken(String phoneId, String token) {
+		AuthDo authDo = authDoMapper.getAuthDo(phoneId,token);
+		if (authDo == null){
+			throw new ServiceException("机器码与秘钥不匹配");
+		}
+		String newToken = UuidUtils.getUUID();
+		authDo.setToken(newToken);
+		int n = authDoMapper.updateByPrimaryKeySelective(authDo);
+		if (n == 1 ){
+			return newToken;
+		}
+		throw new ServiceException("修改失败");
+	}
 
 	@Override
 	public List<AuthDo> getExpireTime(String phoneId, String token,String remark) {

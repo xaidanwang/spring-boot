@@ -19,6 +19,8 @@ public interface AuthService {
 	 */
 	void atuhVerify(String phoneId,String token);
 
+	String updateToken(String phoneId,String token);
+
 	/**
 	 * 获取 机器码与 秘钥 的过期时间
 	 * @param phoneId
