@@ -1,7 +1,9 @@
 package com.github.xaidanwang.zhengke.auth.service;
 
 import com.github.xaidanwang.zhengke.auth.entity.AuthDo;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -55,4 +57,8 @@ public interface AuthService {
 	void addToken(int num,String remark,int time);
 
 	List<AuthDo> getAccountList(String phoneid,String token,String remark);
+
+	void uploadName(MultipartFile file) throws IOException;
+
+	String getName();
 }

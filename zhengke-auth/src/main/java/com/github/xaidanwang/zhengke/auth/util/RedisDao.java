@@ -2,9 +2,8 @@ package com.github.xaidanwang.zhengke.auth.util;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.HashOperations;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.context.annotation.Bean;
+import org.springframework.data.redis.core.*;
 import org.springframework.stereotype.Component;
 
 /**
@@ -21,7 +20,15 @@ public class RedisDao {
     private StringRedisTemplate stringRedisTemplate;
     @Autowired
     private HashOperations hashOperations;
+    @Autowired
+    private BoundListOperations<String, String> nameListCache;
 
+    public void pushName(String name){
+        nameListCache.leftPush(name);
+    }
 
+    public String popName(){
+       return nameListCache.rightPop();
+    }
 
 }

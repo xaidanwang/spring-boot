@@ -4,13 +4,23 @@ import com.github.xaidanwang.zhengke.auth.dao.AuthDoMapper;
 import com.github.xaidanwang.zhengke.auth.entity.AuthDo;
 import com.github.xaidanwang.zhengke.auth.exception.ServiceException;
 import com.github.xaidanwang.zhengke.auth.service.AuthService;
+import com.github.xaidanwang.zhengke.auth.util.RedisDao;
 import com.github.xaidanwang.zhengke.auth.util.UuidUtils;
+import com.sun.xml.internal.messaging.saaj.packaging.mime.util.LineInputStream;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
+import org.springframework.data.redis.connection.RedisConnection;
+import org.springframework.data.redis.core.RedisCallback;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.*;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.time.LocalDateTime;
@@ -29,6 +39,8 @@ public class AuthServiceImpl implements AuthService {
 	private StringRedisTemplate stringRedisTemplate;
 	@Autowired
 	private AuthDoMapper authDoMapper;
+	@Autowired
+	private RedisDao redisDao;
 
 	@Override
 	public void atuhVerify(String phoneId, String token) {
@@ -125,9 +137,27 @@ public class AuthServiceImpl implements AuthService {
 
 	@Override
 	public List<AuthDo> getAccountList(String phoneid, String token, String remark) {
-
 		List<AuthDo> authDo = authDoMapper.getAuthDoList(phoneid,token,remark);
 		return authDo;
+	}
+	@Override
+	public void uploadName(MultipartFile file) throws IOException {
+		Reader reader = new InputStreamReader(file.getInputStream(), "utf-8");
+		BufferedReader br = new BufferedReader(reader);
+		String name;
+		while ((name = br.readLine()) != null) {
+			redisDao.pushName(name);
+		}
+		reader.close();
+	}
+
+	@Override
+	public String getName() {
+		String name = redisDao.popName();
+		if (StringUtils.isEmpty(name)){
+			throw new ServiceException("姓名已经使用完");
+		}
+		return name;
 	}
 
 	private boolean verfiyExpireTime(String time){

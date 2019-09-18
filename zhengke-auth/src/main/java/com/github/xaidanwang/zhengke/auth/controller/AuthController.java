@@ -13,8 +13,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -88,7 +90,7 @@ public class AuthController {
 		return CommonResult.build(ConstantEnum.GLOBAL_SUCCESS);
 	}
 	@ApiOperation(value = "修改绑定的秘钥",httpMethod = "GET",notes = "修改绑定的秘钥")
-	@RequestMapping(value = "/verify",method = RequestMethod.GET)
+	@RequestMapping(value = "/update/token",method = RequestMethod.GET)
 	public CommonResult<String> updateToken(@RequestParam(value = "phoneid") String phoneid,@RequestParam(value = "token") String token){
 		if (StringUtils.isEmpty(token) || token.length() != 32){
 			throw new ParamException("秘钥不能为空或者格式不对");
@@ -100,6 +102,22 @@ public class AuthController {
 		log.info("验证机器码: [{}] 秘钥: [{}]， 结果: [{}]",phoneid,token);
 		return CommonResult.buildWithData(ConstantEnum.GLOBAL_SUCCESS,newToken);
 	}
+
+	@ApiOperation(value = "上传名字",httpMethod = "POST",notes = "上传名字")
+	@RequestMapping(value = "/upload/name",method = RequestMethod.POST)
+	public CommonResult<String> uploadName(MultipartFile file) throws IOException {
+		authService.uploadName(file);
+		return CommonResult.buildWithData(ConstantEnum.GLOBAL_SUCCESS,null);
+	}
+
+	@ApiOperation(value = "获取名字",httpMethod = "GET",notes = "获取名字")
+	@RequestMapping(value = "/get/name",method = RequestMethod.GET)
+	public CommonResult<String> getName(){
+		String name = authService.getName();
+		return CommonResult.buildWithData(ConstantEnum.GLOBAL_SUCCESS,name);
+	}
+
+
 	@PostMapping(value = "/login")
 	public CommonResult login(@RequestParam(value = "username")String username,@RequestParam(value = "password")String password){
 
@@ -109,5 +127,6 @@ public class AuthController {
 			return CommonResult.build(ConstantEnum.GLOBAL_FAIL);
 		}
 	}
+
 
 }
